@@ -1,6 +1,7 @@
+# This manages the base config that happens on both server and node
 class torque::config (
     $torque_home            = $torque::params::torque_home,
-    $build                  = true
+    $build                  = $torque::params::build
 ) inherits torque::params {
     validate_bool($build)
     validate_bool($manage_repo)

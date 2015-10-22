@@ -14,49 +14,6 @@
 #
 # Do not use this class directly (use either server or client)
 #
-class torque(
-  $server_name    = $::hostname,
-  $manage_repo    = false,
-  $package_source = 'hu-berlin',
-  $torque_home    = '/var/spool/torque',
-  $log_dir        = '/var/log/torque',
-) {
+class torque {
 
-  class {'torque::repo':
-    manage_repo    => $manage_repo,
-    package_source => $package_source,
-  }
-
-  file { $torque_home:
-    ensure => 'directory',
-    owner  => 'root',
-    group  => 'root',
-    mode   => '0644',
-  }
-
-  file { "${torque_home}/server_name":
-    ensure  => 'present',
-    content => template("${module_name}/server_name.erb"),
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0644',
-    require => File[$torque_home]
-  }
-
-  file { '/etc/torque/server_name':
-    ensure  => 'present',
-    content => template("${module_name}/server_name.erb"),
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0644',
-  }
-
-  if !empty($log_dir) {
-    file { $log_dir:
-      ensure => 'directory',
-      owner  => 'root',
-      group  => 'root',
-      mode   => '0644',
-    }
-  }
 }

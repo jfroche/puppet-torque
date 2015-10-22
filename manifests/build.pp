@@ -24,8 +24,6 @@ class torque::build (
         $config_options = ""
     }
 
-    notify{"Configure Options: ${config_options}":}
-
     case $::osfamily {
         'RedHat': {
             $dev_packages = [

@@ -24,12 +24,6 @@ class torque::server(
     validate_hash($nodes)
     validate_bool($build)
 
-    $server_default_file = $::osfamily ? {
-        'Debian' => '/etc/default/torque-server',
-        'RedHat' => '/etc/sysconfig/torque-server',
-        default  => fail('Unsupported operating system')
-    }
-
     if $build {
         $full_build_path = "${build_dir}/torque-${version}"
 
@@ -53,6 +47,12 @@ class torque::server(
         $actual_service_name = 'torque-server'
     }
 
+    $server_default_file = $::osfamily ? {
+        "Debian" => "/etc/default/${actual_service_name}",
+        "RedHat" => "/etc/sysconfig/${actual_service_name}",
+        default  => fail('Unsupported operating system')
+    }
+
     service { $actual_service_name:
         ensure     => $service_ensure,
         enable     => $service_enable,
@@ -64,13 +64,24 @@ class torque::server(
         ],
     }
 
+    notify{"LOGDIR: ${log_dir}":}
     file { $server_default_file:
         ensure  => present,
-        content => template("${module_name}/server_default.erb"),
+        content => template("${module_name}/${::osfamily}.server_default.erb"),
         owner   => 'root',
         group   => 'root',
         mode    => '0644',
         notify  => Service[$actual_service_name],
+    }
+
+    if( $use_logrotate and !empty($log_dir) ) {
+        file { '/etc/logrotate.d/torque':
+            ensure  => present,
+            content => template("${module_name}/logrotate.erb"),
+            owner   => 'root',
+            group   => 'root',
+            mode    => '0644',
+        }
     }
 }
 
@@ -107,12 +118,3 @@ class torque::server(
     #class { 'torque::munge': }
     #}
 
-    #if( $use_logrotate and !empty($log_dir) ) {
-        #file { '/etc/logrotate.d/torque':
-            #ensure  => present,
-            #content => template("${module_name}/logrotate.erb"),
-            #owner   => 'root',
-            #group   => 'root',
-            #mode    => '0644',
-        #}
-    #}

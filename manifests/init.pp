@@ -59,29 +59,4 @@ class torque(
       mode   => '0644',
     }
   }
-
-  if $torque_home != '/etc/torque' {
-    file { '/etc/torque':
-      ensure => 'directory',
-      owner  => 'root',
-      group  => 'root',
-      mode   => '0644',
-    }
-
-    # is creating recursive links
-    #file{ '/etc/torque/server_name':
-    #  ensure  => link,
-    #  replace => false,
-    #  target  => "${torque_home}/server_name",
-    #  require => [File['/etc/torque'], File["${torque_home}/server_name"]],
-    #}
-
-    #exec { "create symbolic link":
-    #    command => "/bin/ln -s ${torque_home}/server_name /etc/torque/server_name",
-    #    unless  => '/usr/bin/test -f /etc/torque/server_name',
-    #    creates => '/etc/torque/server_name'
-    #}
-
-  }
-
 }

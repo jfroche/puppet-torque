@@ -1,0 +1,30 @@
+#!/bin/bash
+#
+#argv[1]        job id
+#argv[2]        job execution user name
+#argv[3]        job execution group name
+#argv[4]        job name (TORQUE 1.2.0p4 and higher only)
+#argv[5]        list of requested resource limits (TORQUE 1.2.0p4 and higher only)
+#argv[6]        job execution queue (TORQUE 1.2.0p4 and higher only)
+#argv[7]        job account (TORQUE 1.2.0p4 and higher only)
+
+JOB_ID=$1
+JOB_USERNAME=$2
+JOB_GROUPNAME=$3
+JOB_NAME=$4
+JOB_RESOURCELIMITS=$5
+JOB_QUEUE=$6
+JOB_ACCOUNT=$7
+
+# Ensure scratch directory is created for user
+SCRATCHDIR=/scratch
+USERSCRATCH=${SCRATCHDIR}/${JOB_USERNAME}
+if [ ! -d $USERSCRATCH ]
+then
+    mkdir $USERSCRATCH
+    chown $JOB_USERNAME $USERSCRATCH
+    chmod 700 $USERSCRATCH
+fi
+
+# Run other scripts
+./prologue.killproc.pl $@

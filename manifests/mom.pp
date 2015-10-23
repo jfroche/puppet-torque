@@ -2,21 +2,23 @@
 #
 class torque::mom(
     $torque_server,
-    $restricted           = $torque::params::restricted,
-    $ideal_load_adj       = $torque::params::ideal_load_adj,
-    $max_load_adj         = $torque::params::max_load_adj,
-    $options              = $torque::params::options,
-    $usecp                = $torque::params::usecp,
-    $mom_prologue_file    = $torque::params::mom_prologue_file,
-    $mom_epilogue_file    = $torque::params::mom_epilogue_file,
-    $mom_ensure           = $torque::params::mom_ensure,
-    $mom_service_enable   = $torque::params::mom_service_enable,
-    $mom_service_ensure   = $torque::params::mom_service_ensure,
-    $pbs_environment      = $torque::params::pbs_environment,
-    $torque_home          = $torque::params::torque_home,
-    $build                = $torque::params::build,
-    $version              = $torque::params::version,
-    $build_dir            = $torque::params::build_dir,
+    $restricted                     = $torque::params::restricted,
+    $ideal_load_adj                 = $torque::params::ideal_load_adj,
+    $max_load_adj                   = $torque::params::max_load_adj,
+    $options                        = $torque::params::options,
+    $usecp                          = $torque::params::usecp,
+    $mom_prologue_file              = $torque::params::mom_prologue_file,
+    $mom_epilogue_file              = $torque::params::mom_epilogue_file,
+    $mom_prologue_parallel_file     = $torque::params::mom_prologue_file,
+    $mom_epilogue_parallel_file     = $torque::params::mom_epilogue_file,
+    $mom_ensure                     = $torque::params::mom_ensure,
+    $mom_service_enable             = $torque::params::mom_service_enable,
+    $mom_service_ensure             = $torque::params::mom_service_ensure,
+    $pbs_environment                = $torque::params::pbs_environment,
+    $torque_home                    = $torque::params::torque_home,
+    $build                          = $torque::params::build,
+    $version                        = $torque::params::version,
+    $build_dir                      = $torque::params::build_dir,
 ) inherits torque {
 
   # job execution engine for Torque batch system
@@ -107,12 +109,56 @@ class torque::mom(
                 $requirement
             ]
         }
+        # This file needs to be better managed(more dynamic)
+        file { "${torque_home}/mom_priv/prologue.killproc.pl":
+            ensure => present,
+            source => 'puppet:///modules/torque/prologue.killproc.pl',
+            owner => root,
+            group => root,
+            mode => '0755',
+            require => File["${torque_home}/mom_priv/prologue"]
+        }
+    }
+    if ( $mom_prologue_parallel_file )  {
+        file { "${torque_home}/mom_priv/prologue.parallel":
+            ensure  => 'present',
+            source  => $mom_prologue_parallel_file,
+            owner   => 'root',
+            group   => 'root',
+            mode    => '0755',
+            require => [
+                File["${torque_home}/mom_priv"],
+                $requirement
+            ]
+        }
     }
 
     if ( $mom_epilogue_file )  {
         file { "${torque_home}/mom_priv/epilogue":
             ensure  => 'present',
             source  => $mom_epilogue_file,
+            owner   => 'root',
+            group   => 'root',
+            mode    => '0755',
+            require => [
+                File["${torque_home}/mom_priv"],
+                $requirement
+            ]
+        }
+        # This file needs to be better managed(more dynamic)
+        file { "${torque_home}/mom_priv/epilogue.killproc.pl":
+            ensure => present,
+            source => 'puppet:///modules/torque/epilogue.killproc.pl',
+            owner => root,
+            group => root,
+            mode => '0755',
+            require => File["${torque_home}/mom_priv/epilogue"]
+        }
+    }
+    if ( $mom_epilogue_parallel_file )  {
+        file { "${torque_home}/mom_priv/epilogue.parallel":
+            ensure  => 'present',
+            source  => $mom_epilogue_parallel_file,
             owner   => 'root',
             group   => 'root',
             mode    => '0755',
@@ -129,7 +175,7 @@ class torque::mom(
             ensure => directory,
             owner => root,
             group => root,
-            mode => '1755',
+            mode => '1733',
             require => Exec["/bin/mkdir -p ${options[tmpdir]}"]
         }
     }

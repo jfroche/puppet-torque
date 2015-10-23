@@ -100,7 +100,69 @@ In order to install Maui you have to have a binary package for your distribution
 Hiera is supported out-of-the-box, you can set any class parameter from YAML config files.
 
 ```yaml
-torque::server_name: '192.168.1.1'
+torque::job_environment::environment_vars:
+    WORKDIR: '/scratch/$USER'
+    CENTER:  '/media/VD_Research'
+torque::client::torque_server: "amedwrair015377.amed.ds.army.mil"
+torque::mom::torque_server: "amedwrair015377.amed.ds.army.mil"
+torque::mom::options:
+    logevent: 255
+    usecp: '*:/media/VD_Research /media/VD_Research'
+    tmpdir: '/scratch/jobs'
+torque::mom::pbs_environment:
+    - 'PATH=/bin:/usr/bin'
+    - 'LANG=en_us.UTF-8'
+    - 'BASH_ENV=/etc/bashrc'
+    - 'ENV=/etc/bashrc'
+torque::mom::mom_epilogue_file: 'puppet:///modules/torque/epilogue'
+torque::mom::mom_prologue_file: 'puppet:///modules/torque/prologue'
+torque::mom::mom_epilogue_parallel_file: 'puppet:///modules/torque/epilogue'
+torque::mom::mom_prologue_parallel_file: 'puppet:///modules/torque/prologue'
+# qmgr server options
+# see man pbs_server_attributes
+torque::server::config::qmgr_server:
+    - 'scheduling = True'
+    - 'default_queue = batch'
+    - 'log_events = 511'
+    - 'mail_from = adm'
+    - 'query_other_jobs = True'
+    - 'scheduler_iteration = 60'
+    - 'node_check_rate = 150'
+    - 'tcp_timeout = 300'
+    - 'job_stat_rate = 300'
+    - 'poll_jobs = True'
+    - 'mom_job_sync = True'
+    - 'keep_completed = 300'
+    - 'next_job_number = 1'
+    - 'moab_array_compatible = True'
+    - 'nppcu = 1'
+# Available queues and their options
+# See man pbs_queue_attributes
+torque::server::config::qmgr_queues:
+        batch:
+            - 'queue_type = Execution'
+            - 'Priority = 50'
+            - 'resources_default.nodes = 1'
+            - 'resources_default.walltime = 168:00:00'
+            - 'disallowed_types = interactive'
+            - 'keep_completed = 3600'
+            - 'enabled = True'
+            - 'started = True'
+        interactive:
+            - 'queue_type = Execution'
+            - 'Priority = 50'
+            - 'max_user_queuable = 1'
+            - 'resources_max.nodes = 1'
+            - 'resources_max.walltime = 24:00:00'
+            - 'disallowed_types = batch'
+            - 'keep_completed = 3600'
+            - 'enabled = True'
+            - 'started = True'
+torque::server::nodes::node_list:
+    'amedwrair015377.amed.ds.army.mil':
+        np: 4
+        properties:
+            - testnode
 ```
 ## Dependencies
 

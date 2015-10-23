@@ -94,8 +94,10 @@ class torque::params {
     $max_load_adj               = 1.2
     $options                    = { logevent => 255 }
     $usecp                      = []
-    $mom_prologue_file          = undef
-    $mom_epilogue_file          = undef
+    $mom_prologue_file          = 'puppet:///modules/torque/prologue'
+    $mom_epilogue_file          = 'puppet:///modules/torque/epilogue'
+    $mom_prologue_parallel_file = 'puppet:///modules/torque/prologue'
+    $mom_epilogue_parallel_file = 'puppet:///modules/torque/epilogue'
     $mom_service_name           = 'torque-mom'
     $mom_ensure                 = 'installed'
     $mom_service_enable         = true
@@ -112,4 +114,9 @@ class torque::params {
     $environment_vars                 = {
     }
     $profile_file_path           = '/etc/profile.d/pbs.sh'
+
+    # sched.pp
+    $sched_service_enable   = true
+    $sched_service_ensure   = 'running'
+    $sched_service_name     = 'pbs_sched'
 }

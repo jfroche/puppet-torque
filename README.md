@@ -15,6 +15,21 @@ node default {
     }
     class { "torque::server":
     }
+    class { "torque::server::config":
+        qmgr_queues => {
+            'test' => [
+                'enabled = true',
+                'started = true',
+                'queue_type = Execution'
+            ],
+            'batch' => [
+                'enabled = true',
+                'started = true',
+                'queue_type = Execution',
+                'disallowed_types = interactive'
+            ]
+        }
+    }
     class { "torque::server::nodes":
         node_list => {
             'node1.example.com' => {
@@ -29,7 +44,8 @@ node default {
     }
 
     Class['torque::config'] -> Class['torque::build'] -> 
-        Class['torque::server'] -> Class['torque::server::nodes']
+        Class['torque::server'] -> Class['torque::server::config'] ->
+        Class['torque::server::nodes']
 }
 ```
 

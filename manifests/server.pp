@@ -19,8 +19,6 @@ class torque::server(
 
     validate_bool($enable_maui)
     validate_bool($enable_munge)
-    validate_array($qmgr_conf)
-    validate_array($qmgr_defaults)
     validate_bool($build)
 
     if $build {
@@ -82,32 +80,6 @@ class torque::server(
         }
     }
 }
-
-
-    #$qmgr_merged = concat($qmgr_defaults, $qmgr_conf)
-
-    #file { "${torque_home}/server_priv/nodes":
-        #ensure  => present,
-        #content => template("${module_name}/nodes.erb"),
-        #owner   => 'root',
-        #group   => 'root',
-        #mode    => '0644',
-        #notify  => Service[$service_name],
-        #require => $install_require,
-    #}
-
-
-
-    #class { 'torque::server::config':
-        #torque_home         => $torque_home,
-        #service_name        => $service_name,
-        #qmgr_server         => $qmgr_merged,
-        #qmgr_present        => $qmgr_present,
-        #qmgr_queue_defaults => $qmgr_queue_defaults,
-        #qmgr_queues         => $qmgr_queues,
-    #}
-
-
     #if($enable_maui){
         #class { 'torque::maui': }
     #}

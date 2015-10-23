@@ -5,6 +5,9 @@ class torque::params {
     # if true, then will use hiera_merge as much as possible
     $hiera_merge                = true
 
+    $enable_maui                = false
+    $enable_munge               = true
+
     # init.pp
     $server_name                = $::fqdn
     $manage_repo                = false
@@ -30,19 +33,12 @@ class torque::params {
     $log_file                   = 'server.log'
     $use_logrotate              = true
 
-    # nodes.pp
-    $node_list                  = 
+    # server/nodes.pp
+    $node_list                  = {}
 
-    # queues.pp
-    # the following options are protected from being unset
-    # if they don't appear in torque_qmgr_server
-    $qmgr_present               = [
-        'acl_hosts',
-        'node_check_rate',
-        'tcp_timeout',
-        'next_job_number'
-    ]
-    $qmgr_defaults              = [
+    # server/config.pp
+    # Options from pbs_server_attributes man page
+    $qmgr_server                = [
         "acl_hosts = ${::fqdn}",
         'node_check_rate = 150',
         'tcp_timeout = 6',
@@ -63,7 +59,17 @@ class torque::params {
         # in all versions
         #    "authorized_users = *@${::fqdn}"
     ]
-    $qmgr_conf                  = []
+
+    # the following options are protected from being unset
+    # if they don't appear in torque_qmgr_server
+    # I can't find where this is actually referenced
+    $qmgr_present               = [
+        'acl_hosts',
+        'node_check_rate',
+        'tcp_timeout',
+        'next_job_number'
+    ]
+    # These are the defaults that will be assigned to each queue if not specified
     $qmgr_queue_defaults        = [
         'queue_type = Execution',
         'resources_max.cput = 48:00:00',
@@ -76,8 +82,6 @@ class torque::params {
     # empty, because queues are not set up by default
     # this is a hash with the queue name as key and an array of configuration options as value
     # if no value is specified then the default options array ($qmgr_qdefaults) is used
+    # Look at man pbs_queue_attributes for details on what you can set
     $qmgr_queues                = {}
-    $enable_maui                = false
-    $enable_munge               = true
-    $nodes                      = {}
 }

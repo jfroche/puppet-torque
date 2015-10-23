@@ -15,15 +15,21 @@ node default {
     }
     class { "torque::server":
     }
-
-    torque::node{ "localhost.localdomain":
-        np => 1,
-        properties => [
-            "prop1", "prop2"
-        ]
+    class { "torque::server::nodes":
+        node_list => {
+            'node1.example.com' => {
+                np => 1,
+                properties => ['prop1', 'prop2']
+            },
+            'node2.example.com' => {
+                np => 2,
+                properties => ['prop1', 'prop2']
+            }
+        }
     }
 
-    Class['torque::config'] -> Class['torque::build']
+    Class['torque::config'] -> Class['torque::build'] -> 
+        Class['torque::server'] -> Class['torque::server::nodes']
 }
 ```
 

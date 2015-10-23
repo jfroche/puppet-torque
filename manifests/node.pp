@@ -10,6 +10,8 @@ define torque::node(
     validate_integer($np)
     validate_integer($gpus)
     validate_array($properties)
+    validate_string($torque_home)
+    validate_string($prefix)
 
     $np_ = $np ? {
         0 => '',

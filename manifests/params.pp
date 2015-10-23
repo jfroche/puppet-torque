@@ -1,7 +1,9 @@
 class torque::params {
-    # Misc
+    # Global
     #  If true, then torque will be built from source
     $build                      = true
+    # if true, then will use hiera_merge as much as possible
+    $hiera_merge                = true
 
     # init.pp
     $server_name                = $::fqdn
@@ -27,6 +29,11 @@ class torque::params {
     $server_package             = 'torque-server'
     $log_file                   = 'server.log'
     $use_logrotate              = true
+
+    # nodes.pp
+    $node_list                  = 
+
+    # queues.pp
     # the following options are protected from being unset
     # if they don't appear in torque_qmgr_server
     $qmgr_present               = [

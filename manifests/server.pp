@@ -21,7 +21,6 @@ class torque::server(
     validate_bool($enable_munge)
     validate_array($qmgr_conf)
     validate_array($qmgr_defaults)
-    validate_hash($nodes)
     validate_bool($build)
 
     if $build {
@@ -64,7 +63,6 @@ class torque::server(
         ],
     }
 
-    notify{"LOGDIR: ${log_dir}":}
     file { $server_default_file:
         ensure  => present,
         content => template("${module_name}/${::osfamily}.server_default.erb"),

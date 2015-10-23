@@ -1,17 +1,14 @@
 # Manages torque server configuration
 #
 class torque::server::config (
-  $qmgr_server,
-  $qmgr_queue_defaults,
-  $qmgr_queues,
-  $qmgr_present,
-  $torque_home  = '/var/spool/torque',
-  $service_name = 'torque-server'
+  $qmgr_server              = $torque::params::qmgr_server,
+  $qmgr_queue_defaults      = $torque::params::qmgr_queue_defaults,
+  $qmgr_queues              = $torque::params::qmgr_queues,
+  $torque_home              = $torque::params::torque_home,
 ) {
 
   validate_array($qmgr_server)
   validate_array($qmgr_queue_defaults)
-  validate_array($qmgr_present)
   validate_hash($qmgr_queues)
 
   $sconfig = torque_config_diff('server', $qmgr_server)

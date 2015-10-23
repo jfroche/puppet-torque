@@ -5,18 +5,19 @@
 # $configure_options are any options to use for the configure step
 #  you can see all options here http://docs.adaptivecomputing.com/torque/5-1-1/Content/topics/torque/1-installConfig/customizingTheInstall.htm
 class torque::build (
-	$version 	                = $torque::version,
-    $build_dir                  = $torque::build_dir,
-    $torque_download_base_url   = $torque::torque_download_base_url,
-    $configure_options          = $torque::configure_options,
-    $prefix                     = $torque::prefix
-) inherits torque {
+	$version 	                = $torque::params::version,
+    $build_dir                  = $torque::params::build_dir,
+    $torque_download_base_url   = $torque::params::torque_download_base_url,
+    $configure_options          = $torque::params::configure_options,
+    $prefix                     = $torque::params::prefix
+) inherits torque::params {
     include stdlib
 
     $full_version = "torque-${version}"
     $download_file = "${full_version}.tar.gz"
     $download_url = "${torque_download_base_url}/${download_file}"
     $unpack_dir = "${build_dir}/${full_version}"
+
     if $configure_options {
         $config_options = join($configure_options, " ")
     } else {

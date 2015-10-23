@@ -24,6 +24,11 @@ class torque::server(
     if $build {
         $full_build_path = "${build_dir}/torque-${version}"
 
+        exec {"make_install_${version}":
+            command => "/usr/bin/make install && /bin/touch ${full_build_path}/make_install_already_run",
+            creates => "${full_build_path}/make_install_already_run",
+            cwd => $full_build_path
+        }
         $service_file = $::osfamily ? {
             'Debian' => 'debian.pbs_server',
             'Suse'   => 'suse.pbs_server',
@@ -42,6 +47,13 @@ class torque::server(
             ensure => $server_ensure
         }
         $actual_service_name = 'torque-server'
+    }
+
+    file {"${torque_home}/spool":
+        ensure => directory,
+        mode => '1777',
+        owner => root,
+        group => root
     }
 
     $server_default_file = $::osfamily ? {

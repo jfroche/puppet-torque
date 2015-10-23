@@ -4,9 +4,10 @@ class torque::params {
     $build                      = true
     # if true, then will use hiera_merge as much as possible
     $hiera_merge                = true
-
+    # Maui scheduler
     $enable_maui                = false
-    $enable_munge               = true
+    # Munge authentication services
+    $enable_munge               = false
 
     # init.pp
     $server_name                = $::fqdn
@@ -84,4 +85,31 @@ class torque::params {
     # if no value is specified then the default options array ($qmgr_qdefaults) is used
     # Look at man pbs_queue_attributes for details on what you can set
     $qmgr_queues                = {}
+
+    # client.pp
+
+    # mom.pp
+    $restricted                 = []
+    $ideal_load_adj             = 0.2
+    $max_load_adj               = 1.2
+    $options                    = { logevent => 255 }
+    $usecp                      = []
+    $mom_prologue_file          = undef
+    $mom_epilogue_file          = undef
+    $mom_service_name           = 'torque-mom'
+    $mom_ensure                 = 'installed'
+    $mom_service_enable         = true
+    $mom_service_ensure         = 'running'
+    # list of vars to set for pbs_environment
+    $pbs_environment        = [
+        'PATH=/bin:/usr/bin',
+        'LANG=en_us.UTF-8'
+    ]
+
+    # job_environment.pp
+    # This is a hash of simple VAR=VAL that will be put in
+    # profile_file_path so that jobs get the vars
+    $environment_vars                 = {
+    }
+    $profile_file_path           = '/etc/profile.d/pbs.sh'
 }

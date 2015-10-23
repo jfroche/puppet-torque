@@ -2,45 +2,30 @@
 #   should be install on computing nodes
 #
 class torque::client(
-  $torque_server,
-  $mom_ensure         = 'installed',
-  $package_ensure     = 'installed',
-  $mom_service_name   = 'torque-mom',
-  $mom_service_enable = true,
-  $mom_service_ensure = 'running',
-  $enable_munge       = false,
-  $torque_home        = $torque::torque_home,
-  $hostname           = $::hostname,
-  $cpus               = $::processorcount,
-  $gpus               = 0,
-  $export_tag         = 'torque',
-  ) inherits torque {
+    $torque_server,
+    $torque_home        = $torque::params::torque_home,
+    $bulid_dir          = $torque::params::build_dir,
+    $build              = $torque::params::build,
+    $version            = $torque::params::version
+) inherits torque::params {
+    # command line interface to Torque server
+    if $build {
+        $full_build_path = "${build_dir}/torque-${version}"
+        exec {"install_torque_client_${version}":
+            command => "${full_build_path}/torque-package-clients-linux-x86_64.sh --install && touch ${full_build_path}/torque_client_installed",
+            creates => "${full_build_path}/torque_client_installed",
+            require => Exec["make_packages_${version}"]
+        }
+    } else {
+        package { 'torque-client':
+            ensure => $package_ensure,
+        }
+    }
 
-  $fhost = $::fqdn
-
-  # command line interface to Torque server
-  package { 'torque-client':
-    ensure => $package_ensure,
-  }
-
-  class { 'torque::mom':
-    torque_server      => $torque_server,
-    mom_ensure         => $mom_ensure,
-    mom_service_name   => $mom_service_name,
-    mom_service_enable => $mom_service_enable,
-    mom_service_ensure => $mom_service_ensure,
-  }
-
-  if($enable_munge) {
-    class { 'torque::munge': }
-  }
-
-  file { "${torque_home}/server_priv":
-    ensure  => directory,
-    recurse => true,
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0600',
-  }
-
+    file { "${torque_home}/aux":
+        ensure  => directory,
+        owner   => 'root',
+        group   => 'root',
+        mode    => '0644',
+    }
 }

@@ -1,0 +1,4 @@
+#!/bin/sh
+<% @environment_vars.sort.each do |var, val| -%>
+<%= var %>="<%= val %>"
+<% end -%>

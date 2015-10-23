@@ -1,0 +1,25 @@
+# TODO
+
+* Merge in https://github.com/BeneDicere/puppet-torque so server
+  subscribes to new nodes and adds them to hosts file
+* Add similar functionality to nodes for firewall rules
+* Setup auth.pp to accept munge and pam
+Configure /etc/security/access.conf so only users that have active job can ssh in
+
+-:ALL EXCEPT root wrairredhatadmin torque:ALL
+
+Configure /etc/pam.d/sshd with pbs access.
+
+    Add following at the end of the account section(note that the torque docs say required but sufficient is correct)
+
+    account sufficient pam_pbssimpleauth.so
+    account required pam_access.so
+
+Configure selinux such that pam:sshd can read job files to ensure user has a job running to log them in
+
+    download torque.pp
+
+    yum install policycoreutils
+    semodule -i /media/VD_Research/Admin/PBS/Software/torque/torqueavc/torque.pp
+
+

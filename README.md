@@ -5,47 +5,40 @@ This is a Puppet module for managing Torque resource manager and Maui scheduler.
 
 ## Usage
 
+### profiles/torque.pp
+
+```puppet
+class profile::torque inherits profile {
+    class { "torque::config": }
+    class { "torque::build": }
+    class { "torque::trqauthd": }
+    Class['torque::config'] -> Class['torque::build'] ->
+        Class['torque::trqauthd']
+}
+
+class profile::torque::master inherits profile::torque {
+    class { "torque::server": }
+    class { "torque::server::config": }
+    class { "torque::server::nodes": }
+    class { "torque::sched": }
+    Class['torque::build'] -> Class['hosts'] -> Class['torque::server'] -> 
+        Class['torque::server::config'] -> Class['torque::server::nodes'] ->
+        Class['torque::sched']
+}
+
+class profile::torque::client inherits profile::torque {
+    class { "torque::client": }
+    class { "torque::mom": }
+    class { "torque::auth": }
+    class { "torque::job_environment": }
+}
+```
+
 server:
 
 ```puppet
 node default {
-    class { "torque::config":
-    }
-    class { "torque::build":
-    }
-    class { "torque::server":
-    }
-    class { "torque::server::config":
-        qmgr_queues => {
-            'test' => [
-                'enabled = true',
-                'started = true',
-                'queue_type = Execution'
-            ],
-            'batch' => [
-                'enabled = true',
-                'started = true',
-                'queue_type = Execution',
-                'disallowed_types = interactive'
-            ]
-        }
-    }
-    class { "torque::server::nodes":
-        node_list => {
-            'node1.example.com' => {
-                np => 1,
-                properties => ['prop1', 'prop2']
-            },
-            'node2.example.com' => {
-                np => 2,
-                properties => ['prop1', 'prop2']
-            }
-        }
-    }
-
-    Class['torque::config'] -> Class['torque::build'] -> 
-        Class['torque::server'] -> Class['torque::server::config'] ->
-        Class['torque::server::nodes']
+    include profiles::torque::master
 }
 ```
 
@@ -55,37 +48,10 @@ By default `server_name` is the `$::fqdn` of the server node (we get it from Fac
 
 client (a computing node):
 
-*Note*: Broken at this time
-
 ```puppet
-class { 'torque::client': }
-```
-
-
-### Queues
-
-Queues can be configured via `qmgr_queues` hash which you pass to `torque::server`.
-
-```yaml
-torque::server::qmgr_queues:
-  short:
-    - 'enabled = True'
-    - 'started = True'
-    - 'queue_type = Execution'
-```
-
-
-### Nodes
-
-Nodes can be specified via Hiera config (also you can pass a config hash to `torque::server` class):
-
-```yaml
-torque::server::nodes:
-  myserver1:
-    cpus: 10
-  gpu.example.com:
-    cpus: 5
-    gpus: 10
+node default {
+    include profiles::torque::client
+} 
 ```
 
 ## Maui
@@ -100,14 +66,17 @@ In order to install Maui you have to have a binary package for your distribution
 Hiera is supported out-of-the-box, you can set any class parameter from YAML config files.
 
 ```yaml
+torque::auth::auth_allowed_users:
+    - root
+    - torque
 torque::job_environment::environment_vars:
     WORKDIR: '/scratch/$USER'
-    CENTER:  '/media/VD_Research'
-torque::client::torque_server: "amedwrair015377.amed.ds.army.mil"
-torque::mom::torque_server: "amedwrair015377.amed.ds.army.mil"
+    CENTER:  '/export/homes/$USER'
+torque::client::torque_server: "master.example.com"
+torque::mom::torque_server: "master.example.com
 torque::mom::options:
     logevent: 255
-    usecp: '*:/media/VD_Research /media/VD_Research'
+    usecp: '*:/export/homes /export/homes'
     tmpdir: '/scratch/jobs'
 torque::mom::pbs_environment:
     - 'PATH=/bin:/usr/bin'
@@ -159,7 +128,7 @@ torque::server::config::qmgr_queues:
             - 'enabled = True'
             - 'started = True'
 torque::server::nodes::node_list:
-    'amedwrair015377.amed.ds.army.mil':
+    'node1.example.com':
         np: 4
         properties:
             - testnode

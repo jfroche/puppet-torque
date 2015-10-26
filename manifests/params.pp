@@ -119,4 +119,8 @@ class torque::params {
     $sched_service_enable   = true
     $sched_service_ensure   = 'running'
     $sched_service_name     = 'pbs_sched'
+
+    # auth.pp
+    # List of users that will be always allowed to login to auth nodes
+    $auth_allowed_users     = ['root','torque']
 }

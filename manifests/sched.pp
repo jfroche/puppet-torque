@@ -26,6 +26,9 @@ class torque::sched (
     service { $actual_service_name:
         ensure => $sched_service_ensure,
         enable => $sched_service_enable,
-        require => File["/etc/init.d/${actual_service_name}"]
+        require => [
+            File["/etc/init.d/${actual_service_name}"],
+            Service['pbs_server']
+        ]
     }
 }

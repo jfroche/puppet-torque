@@ -66,7 +66,8 @@ class torque::server(
         ensure     => $service_ensure,
         enable     => $service_enable,
         require    => [
-            File["/etc/init.d/${actual_service_name}"]
+            File["/etc/init.d/${actual_service_name}"],
+            Service["trqauthd"]
         ],
         subscribe  => [
             File["${torque_home}/server_name"]

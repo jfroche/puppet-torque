@@ -28,3 +28,6 @@ Configure selinux such that pam:sshd can read job files to ensure user has a job
 * Setup /etc/sysconfig/pbs_mom so that logfiles can go to /var/log/torque
 * Include logrotate stuff for pbs_sched and pbs_mom
 * Fix LANGUAGE and LC_whatever errors for perl
+* Install torque docs executes always
+* qmgr_config file can have contents but not applied if server was not running during
+last run and failed to apply qmgr

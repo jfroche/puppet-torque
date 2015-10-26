@@ -1,6 +1,15 @@
 class torque::auth (
-    $auth_allowed_users = $torque::params::auth_allowed_users
+    $auth_allowed_users = $torque::params::auth_allowed_users,
+    $version            = $torque::params::version,
+    $build              = $torque::params::build,
+    $build_dir          = $torque::params::build_dir
 ) inherits torque::params {
+    $full_build_dir = "${build_dir}/torque-${version}"
+    exec {"install_torque_pam_${version}":
+        command => "${full_build_dir}/torque-package-pam-linux-x86_64.sh --install",
+        require => Exec["make_packages_${version}"],
+        creates => "/lib64/security/pam_pbssimpleauth.so"
+    }
     # Put pam_access.so after last account line
     # but before any includes
     augeas {"/etc/pam.d/sshd/pam_access.so":
@@ -23,7 +32,11 @@ class torque::auth (
             "set 101/module pam_pbssimpleauth.so"
         ],
         onlyif => "match *[module='pam_pbssimpleauth.so'] size == 0",
-        require => Augeas['/etc/pam.d/sshd/pam_access.so']
+        require => [
+            Exec["install_torque_pam_${version}"],
+            Augeas['/etc/pam.d/sshd/pam_access.so'],
+            Exec["install_torque_mom_${version}"]
+        ]
     }
     # Add access line to end if no other access rules
     # Build a augeas change set for all auth_allowed_users

@@ -64,7 +64,8 @@ class torque::build (
         cwd => $unpack_dir
     }
     exec {"install_torque_docs_${version}":
-        command => "${unpack_dir}/torque-package-doc-linux-x86_64.sh --install",
-        require => Exec["make_packages_${version}"]
+        command => "${unpack_dir}/torque-package-doc-linux-x86_64.sh --install && /bin/touch ${unpack_dir}/torque_docs_installed",
+        require => Exec["make_packages_${version}"],
+        creates => "${unpack_dir}/torque_docs_installed"
     }
 }

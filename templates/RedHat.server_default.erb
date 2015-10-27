@@ -1,5 +1,0 @@
-PBS_HOME="<%= @torque_home %>"
-<% opts = "" -%>
-<% unless @log_dir.nil? -%>
-PBS_ARGS="<%= "-L " << @log_dir << "/" << @log_file %>"
-<% end -%>

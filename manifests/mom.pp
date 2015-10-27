@@ -15,6 +15,7 @@ class torque::mom(
     $build                          = $torque::params::build,
     $version                        = $torque::params::version,
     $build_dir                      = $torque::params::build_dir,
+    $mom_service_options            = $torque::params::mom_service_options
 ) inherits torque {
 
   # job execution engine for Torque batch system
@@ -30,13 +31,7 @@ class torque::mom(
             'Suse'   => 'suse.pbs_mom',
             default  => 'pbs_mom'
         }
-        $full_service_file_path = "${build_dir}/torque-${version}/contrib/init.d/${service_file}"
-        file {"/etc/init.d/pbs_mom":
-            source => "${full_service_file_path}",
-            mode => "0755",
-            owner => root,
-            group => root
-        }
+        $service_file_source = "${build_dir}/torque-${version}/contrib/init.d/${service_file}"
         $actual_service_name = 'pbs_mom'
         $requirement = Exec["install_torque_docs_${version}"]
     } else {
@@ -93,16 +88,10 @@ class torque::mom(
         }
     }
 
-    service { $actual_service_name:
-        ensure     => $mom_service_ensure,
-        enable     => $mom_service_enable,
-        require    => [
-            $requirement,
-            File["${torque_home}/undelivered"]
-        ],
-        subscribe  => [
-            File["${torque_home}/mom_priv/config"],
-            File["${torque_home}/pbs_environment"]
-        ]
+    torque::service { $actual_service_name:
+        ensure => $mom_service_ensure,
+        enable => $mom_service_enable,
+        service_options => $mom_service_options,
+        service_file_source => $service_file_source
     }
 }

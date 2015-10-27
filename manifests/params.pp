@@ -14,7 +14,6 @@ class torque::params {
     $manage_repo                = false
     $package_source             = 'hu-berlin'
     $torque_home                = '/var/spool/torque'
-    $log_dir                    = '/var/log/torque'
 
     # build.pp
 	$version 	                = '5.1.1.2-1_18e4a5f1'
@@ -26,13 +25,19 @@ class torque::params {
     $prefix                     = '/usr/local'
 
     # server.pp
-    $server_ensure              = 'present'
-    $service_name               = 'torque-server'
-    $service_ensure             = 'running'
-    $service_enable             = true
+    $server_server_ensure       = 'present'
+    $server_service_name        = 'torque-server'
+    $server_service_ensure      = 'running'
+    $server_service_enable      = true
     $server_package             = 'torque-server'
     $log_file                   = 'server.log'
     $use_logrotate              = true
+    $server_service_options = {
+        pbs_home => $torque_home,
+        pbs_args => [
+            "-L ${torque_home}/${server_service_name}.log",
+        ]
+    }
 
     # server/nodes.pp
     $node_list                  = {}
@@ -98,6 +103,12 @@ class torque::params {
     $mom_ensure                 = 'installed'
     $mom_service_enable         = true
     $mom_service_ensure         = 'running'
+    $mom_service_options = {
+        pbs_home => $torque_home,
+        pbs_args => [
+            "-L ${torque_home}/${mom_service_name}.log",
+        ]
+    }
 
     # job_environment.pp
     # This is a hash of simple VAR=VAL that will be put in
@@ -122,6 +133,12 @@ class torque::params {
     $sched_service_enable   = true
     $sched_service_ensure   = 'running'
     $sched_service_name     = 'pbs_sched'
+    $sched_service_options = {
+        pbs_home => $torque_home,
+        pbs_args => [
+            "-L ${torque_home}/${sched_service_name}.log",
+        ]
+    }
 
     # auth.pp
     # List of users that will be always allowed to login to auth nodes

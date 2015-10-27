@@ -10,6 +10,7 @@ class torque::job_environment (
     $epilogue_parallel_file     = $torque::params::epilogue_file,
     $pbs_environment            = $torque::params::pbs_environment,
     $build                      = $torque::params::build,
+    $logout_users_nojobs        = $torque::params::logout_users_nojobs
 ) {
     validate_hash($environment_vars)
     validate_string($profile_file_path)
@@ -19,12 +20,13 @@ class torque::job_environment (
     validate_string($epilogue_parallel_file)
     validate_array($pbs_environment)
     validate_bool($build)
+    validate_bool($logout_users_nojobs)
 
     file {$profile_file_path:
         owner       => root,
         group       => root,
         mode        => '0755',
-        content     => template('torque/pbs.sh.erb')
+        content     => template("${module_name}/pbs.sh.erb")
     }
 
     if ( $prologue_file )  {
@@ -75,7 +77,7 @@ class torque::job_environment (
         # This file needs to be better managed(more dynamic)
         file { "${torque_home}/mom_priv/epilogue.killproc.pl":
             ensure => present,
-            source => 'puppet:///modules/torque/epilogue.killproc.pl',
+            content => template("${module_name}/epilogue.killproc.pl.erb"),
             owner => root,
             group => root,
             mode => '0755',
@@ -97,7 +99,7 @@ class torque::job_environment (
 
     file { "${torque_home}/pbs_environment":
         ensure  => 'present',
-        content => template('torque/pbs_environment.erb'),
+        content => template("${module_name}/pbs_environment.erb"),
         owner   => 'root',
         group   => 'root',
         mode    => '0644',

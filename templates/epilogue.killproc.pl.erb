@@ -38,11 +38,13 @@ print ACCESSFILE $modifiedAccessFile;
 # closing the file releases the file lock
 close(ACCESSFILE);
 
+<% if @logout_users_nojobs -%>
 # uncomment to kill all processes owned by user if that user does not have another job running
 if( $anotherJobRunning == 0){
     # the user only had one job on this node
     # kill all processes owned by user
     system( "pkill -U ".$userName );
 }
+<% end -%>
 
 exit(0);

@@ -114,6 +114,9 @@ class torque::params {
         'PATH=/bin:/usr/bin',
         'LANG=en_us.UTF-8'
     ]
+    # Kills all processes for users that have no jobs running
+    # anymore
+    $logout_users_nojobs    = true
 
     # sched.pp
     $sched_service_enable   = true

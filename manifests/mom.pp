@@ -100,6 +100,9 @@ class torque::mom(
             $requirement,
             File["${torque_home}/undelivered"]
         ],
-        subscribe  => File["${torque_home}/mom_priv/config"]
+        subscribe  => [
+            File["${torque_home}/mom_priv/config"],
+            File["${torque_home}/pbs_environment"]
+        ]
     }
 }

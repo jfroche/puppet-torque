@@ -70,7 +70,8 @@ class torque::server(
             Service["trqauthd"]
         ],
         subscribe  => [
-            File["${torque_home}/server_name"]
+            File["${torque_home}/server_name"],
+            File["${torque_home}/pbs_environment"]
         ],
     }
 

@@ -53,4 +53,17 @@ class torque::auth (
         ] + $except_users,
         onlyif      => "match access[.='-' and user='ALL' and origin='ALL'] size == 0"
     }
+    # Ensure except user list is always correct
+    $except_users_replace = $auth_allowed_users.reduce([]) | $memo, $entry | {
+        $memo + ["set access[.='-' and user='ALL' and origin='ALL']/except/user[last()+1] ${entry}"]
+    }
+    augeas {"/etc/security/access.conf_set_users":
+        context     => "/files/etc/security/access.conf",
+        changes     => [
+            'defvar p access[.="-" and user="ALL" and origin="ALL"]',
+            'rm $p/except',
+            'ins except after $p/user',
+        ] + $except_users_replace,
+        onlyif      => "match access[.='-' and user='ALL' and origin='ALL'] size != 0"
+    }
 }

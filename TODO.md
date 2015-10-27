@@ -3,14 +3,6 @@
 * Merge in https://github.com/BeneDicere/puppet-torque so server
   subscribes to new nodes and adds them to hosts file
 * Add similar functionality to nodes for firewall rules
-* Setup auth.pp to accept munge and pam
-Configure selinux such that pam:sshd can read job files to ensure user has a job running to log them in
-
-    download torque.pp
-
-    yum install policycoreutils
-    semodule -i /media/VD_Research/Admin/PBS/Software/torque/torqueavc/torque.pp
-
 * Fix epilogue and prologue scripts. Maybe part of pbs_environment.pp?
 * Setup ${torque_home}/sched_priv/sched_config
 * Setup /etc/sysconfig/pbs_sched so that logfiles can go to /var/log/torque

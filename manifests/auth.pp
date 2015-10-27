@@ -4,6 +4,15 @@ class torque::auth (
     $build              = $torque::params::build,
     $build_dir          = $torque::params::build_dir
 ) inherits torque::params {
+    include selinux
+
+    # Allows sshd to read ${torque_home}/mom_priv/jobs/*
+    # as that is how the pam_pbssimpleauth.so determins if a user
+    # has a job running or not
+    selinux::module { 'torque':
+        source => 'puppet:///modules/torque/selinux'
+    }
+
     $full_build_dir = "${build_dir}/torque-${version}"
     exec {"install_torque_pam_${version}":
         command => "${full_build_dir}/torque-package-pam-linux-x86_64.sh --install",

@@ -1,0 +1,13 @@
+
+module torque 1.0;
+
+require {
+        type sshd_t;
+        type var_spool_t;
+        class dir read;
+        class file open;
+}
+
+#============= sshd_t ==============
+allow sshd_t var_spool_t:dir read;
+allow sshd_t var_spool_t:file open;

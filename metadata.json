@@ -10,6 +10,10 @@
   "description": "Torque is an open-source version of PBS",
   "dependencies": [
     {
+      "name": "spiette-selinux",
+      "version_requirement": ">= 0.5.4"
+    },
+    {
       "name": "puppetlabs-stdlib",
       "version_requirement": ">= 2.0.0"
     },

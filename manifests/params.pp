@@ -94,19 +94,10 @@ class torque::params {
     $max_load_adj               = 1.2
     $options                    = { logevent => 255 }
     $usecp                      = []
-    $mom_prologue_file          = 'puppet:///modules/torque/prologue'
-    $mom_epilogue_file          = 'puppet:///modules/torque/epilogue'
-    $mom_prologue_parallel_file = 'puppet:///modules/torque/prologue'
-    $mom_epilogue_parallel_file = 'puppet:///modules/torque/epilogue'
     $mom_service_name           = 'torque-mom'
     $mom_ensure                 = 'installed'
     $mom_service_enable         = true
     $mom_service_ensure         = 'running'
-    # list of vars to set for pbs_environment
-    $pbs_environment        = [
-        'PATH=/bin:/usr/bin',
-        'LANG=en_us.UTF-8'
-    ]
 
     # job_environment.pp
     # This is a hash of simple VAR=VAL that will be put in
@@ -114,6 +105,15 @@ class torque::params {
     $environment_vars                 = {
     }
     $profile_file_path           = '/etc/profile.d/pbs.sh'
+    $prologue_file          = 'puppet:///modules/torque/prologue'
+    $epilogue_file          = 'puppet:///modules/torque/epilogue'
+    $prologue_parallel_file = 'puppet:///modules/torque/prologue'
+    $epilogue_parallel_file = 'puppet:///modules/torque/epilogue'
+    # list of vars to set for pbs_environment
+    $pbs_environment        = [
+        'PATH=/bin:/usr/bin',
+        'LANG=en_us.UTF-8'
+    ]
 
     # sched.pp
     $sched_service_enable   = true

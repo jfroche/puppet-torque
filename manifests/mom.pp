@@ -7,14 +7,10 @@ class torque::mom(
     $max_load_adj                   = $torque::params::max_load_adj,
     $options                        = $torque::params::options,
     $usecp                          = $torque::params::usecp,
-    $mom_prologue_file              = $torque::params::mom_prologue_file,
-    $mom_epilogue_file              = $torque::params::mom_epilogue_file,
-    $mom_prologue_parallel_file     = $torque::params::mom_prologue_file,
-    $mom_epilogue_parallel_file     = $torque::params::mom_epilogue_file,
     $mom_ensure                     = $torque::params::mom_ensure,
     $mom_service_enable             = $torque::params::mom_service_enable,
     $mom_service_ensure             = $torque::params::mom_service_ensure,
-    $pbs_environment                = $torque::params::pbs_environment,
+    $mom_service_name               = $torque::params::mom_service_name,
     $torque_home                    = $torque::params::torque_home,
     $build                          = $torque::params::build,
     $version                        = $torque::params::version,
@@ -48,7 +44,7 @@ class torque::mom(
             ensure => $mom_ensure,
         }
         $requirement = Package['torque-mom']
-        $actual_service_name = $service_name
+        $actual_service_name = $mom_service_name
     }
 
     file { "${torque_home}/mom":
@@ -84,89 +80,6 @@ class torque::mom(
         group => root,
         mode => '1777',
         require => $requirement
-    }
-
-    file { "${torque_home}/pbs_environment":
-        ensure  => 'present',
-        content => template('torque/pbs_environment.erb'),
-        owner   => 'root',
-        group   => 'root',
-        mode    => '0644',
-        require => [
-            $requirement
-        ],
-    }
-
-    if ( $mom_prologue_file )  {
-        file { "${torque_home}/mom_priv/prologue":
-            ensure  => 'present',
-            source  => $mom_prologue_file,
-            owner   => 'root',
-            group   => 'root',
-            mode    => '0755',
-            require => [
-                File["${torque_home}/mom_priv"],
-                $requirement
-            ]
-        }
-        # This file needs to be better managed(more dynamic)
-        file { "${torque_home}/mom_priv/prologue.killproc.pl":
-            ensure => present,
-            source => 'puppet:///modules/torque/prologue.killproc.pl',
-            owner => root,
-            group => root,
-            mode => '0755',
-            require => File["${torque_home}/mom_priv/prologue"]
-        }
-    }
-    if ( $mom_prologue_parallel_file )  {
-        file { "${torque_home}/mom_priv/prologue.parallel":
-            ensure  => 'present',
-            source  => $mom_prologue_parallel_file,
-            owner   => 'root',
-            group   => 'root',
-            mode    => '0755',
-            require => [
-                File["${torque_home}/mom_priv"],
-                $requirement
-            ]
-        }
-    }
-
-    if ( $mom_epilogue_file )  {
-        file { "${torque_home}/mom_priv/epilogue":
-            ensure  => 'present',
-            source  => $mom_epilogue_file,
-            owner   => 'root',
-            group   => 'root',
-            mode    => '0755',
-            require => [
-                File["${torque_home}/mom_priv"],
-                $requirement
-            ]
-        }
-        # This file needs to be better managed(more dynamic)
-        file { "${torque_home}/mom_priv/epilogue.killproc.pl":
-            ensure => present,
-            source => 'puppet:///modules/torque/epilogue.killproc.pl',
-            owner => root,
-            group => root,
-            mode => '0755',
-            require => File["${torque_home}/mom_priv/epilogue"]
-        }
-    }
-    if ( $mom_epilogue_parallel_file )  {
-        file { "${torque_home}/mom_priv/epilogue.parallel":
-            ensure  => 'present',
-            source  => $mom_epilogue_parallel_file,
-            owner   => 'root',
-            group   => 'root',
-            mode    => '0755',
-            require => [
-                File["${torque_home}/mom_priv"],
-                $requirement
-            ]
-        }
     }
 
     if $options['tmpdir'] {

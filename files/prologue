@@ -17,14 +17,14 @@ JOB_QUEUE=$6
 JOB_ACCOUNT=$7
 
 # Ensure scratch directory is created for user
-SCRATCHDIR=/scratch
-USERSCRATCH=${SCRATCHDIR}/${JOB_USERNAME}
-if [ ! -d $USERSCRATCH ]
-then
-    mkdir $USERSCRATCH
-    chown $JOB_USERNAME $USERSCRATCH
-    chmod 700 $USERSCRATCH
-fi
+#SCRATCHDIR=/scratch
+#USERSCRATCH=${SCRATCHDIR}/${JOB_USERNAME}
+#if [ ! -d $USERSCRATCH ]
+#then
+#    mkdir $USERSCRATCH
+#    chown $JOB_USERNAME $USERSCRATCH
+#    chmod 700 $USERSCRATCH
+#fi
 
 # Run other scripts
 ./prologue.killproc.pl $@

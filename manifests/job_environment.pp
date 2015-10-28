@@ -8,7 +8,6 @@ class torque::job_environment (
     $epilogue_file              = $torque::params::epilogue_file,
     $prologue_parallel_file     = $torque::params::prologue_file,
     $epilogue_parallel_file     = $torque::params::epilogue_file,
-    $pbs_environment            = $torque::params::pbs_environment,
     $build                      = $torque::params::build,
     $logout_users_nojobs        = $torque::params::logout_users_nojobs
 ) {
@@ -18,7 +17,6 @@ class torque::job_environment (
     validate_string($epilogue_file)
     validate_string($prologue_parallel_file)
     validate_string($epilogue_parallel_file)
-    validate_array($pbs_environment)
     validate_bool($build)
     validate_bool($logout_users_nojobs)
 
@@ -96,16 +94,4 @@ class torque::job_environment (
             ]
         }
     }
-
-    file { "${torque_home}/pbs_environment":
-        ensure  => 'present',
-        content => template("${module_name}/pbs_environment.erb"),
-        owner   => 'root',
-        group   => 'root',
-        mode    => '0644',
-        require => [
-            File[$torque_home]
-        ],
-    }
-
 }

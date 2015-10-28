@@ -6,39 +6,74 @@ This is a Puppet module for managing Torque resource manager and Maui scheduler.
 ## Usage
 
 ### profiles/torque.pp
-
 ```puppet
-class profile::torque inherits profile {
-    class { "torque::config": }
-    class { "torque::build": }
-    class { "torque::trqauthd": }
-    Class['torque::config'] -> Class['torque::build'] ->
-        Class['torque::trqauthd']
+class fixresolve {
+    file { "/etc/resolve.conf":
+        content => "nameserver 10.0.2.3"
+    }
 }
 
-class profile::torque::master inherits profile::torque {
-    class { "torque::server": }
-    class { "torque::server::config": }
-    class { "torque::server::nodes": }
-    class { "torque::sched": }
-    Class['torque::build'] -> Class['hosts'] -> Class['torque::server'] -> 
-        Class['torque::server::config'] -> Class['torque::server::nodes'] ->
-        Class['torque::sched']
+class profile {
+    include fixresolve
+
+    class { "torque::config":
+        torque_server => 'master'
+    }
+    class { "torque::build":
+    }
+    class { "torque::client":
+        torque_server => 'master'
+    }
+    class { "torque::trqauthd":
+    }
 }
 
-class profile::torque::client inherits profile::torque {
-    class { "torque::client": }
-    class { "torque::mom": }
-    class { "torque::auth": }
+class profile::client inherits profile{
+    class { "torque::mom":
+        torque_server => 'master'
+    }
     class { "torque::job_environment": }
 }
-```
 
-server:
+class profile::master inherits profile{
+    class { "torque::server":
+    }
+    class { "torque::server::config":
+        qmgr_queues => {
+            'test' => [
+                'enabled = true',
+                'started = true',
+                'queue_type = Execution'
+            ],
+            'batch' => [
+                'enabled = true',
+                'started = true',
+                'queue_type = Execution',
+                'disallowed_types = interactive'
+            ]
+        }
+    }
+    class { "torque::sched":
+    }
+    class { "torque::server::nodes":
+        node_list => {
+            'client' => {
+                np => 1,
+                properties => ['prop1', 'prop2']
+            }
+        }
+    }
+}
 
-```puppet
 node default {
-    include profiles::torque::master
+}
+
+node client {
+    include profile::client
+}
+
+node master {
+    include profile::master
 }
 ```
 

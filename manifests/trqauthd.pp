@@ -18,8 +18,11 @@ class torque::trqauthd (
     }
     file {"/etc/init.d/trqauthd":
         source => $full_service_file_path,
-        require => File['/etc/ld.so.conf.d/torque.conf'],
-        mode => "0755"
+        require => [
+            File['/etc/ld.so.conf.d/torque.conf'],
+            Class["torque::client"]
+        ],
+        mode => "0755",
     }
     service {"trqauthd":
         ensure => "running",

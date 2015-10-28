@@ -16,6 +16,8 @@ class torque::sched (
         }
         $service_file_source = "${build_dir}/torque-${version}/contrib/init.d/${service_file}"
         $actual_service_name = 'pbs_sched'
+    } else {
+        $actual_service_name = $service_name
     }
 
     torque::service { $actual_service_name:

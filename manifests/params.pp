@@ -35,7 +35,7 @@ class torque::params {
     $server_service_options = {
         pbs_home => $torque_home,
         pbs_args => [
-            "-L ${torque_home}/${server_service_name}.log",
+            "-L ${torque_home}/server_logs/${server_service_name}.log",
         ]
     }
 
@@ -106,7 +106,7 @@ class torque::params {
     $mom_service_options = {
         pbs_home => $torque_home,
         pbs_args => [
-            "-L ${torque_home}/${mom_service_name}.log",
+            "-L ${torque_home}/mom_logs/${mom_service_name}.log",
         ]
     }
 
@@ -120,11 +120,6 @@ class torque::params {
     $epilogue_file          = 'puppet:///modules/torque/epilogue'
     $prologue_parallel_file = 'puppet:///modules/torque/prologue'
     $epilogue_parallel_file = 'puppet:///modules/torque/epilogue'
-    # list of vars to set for pbs_environment
-    $pbs_environment        = [
-        'PATH=/bin:/usr/bin',
-        'LANG=en_us.UTF-8'
-    ]
     # Kills all processes for users that have no jobs running
     # anymore
     $logout_users_nojobs    = true
@@ -132,15 +127,23 @@ class torque::params {
     # sched.pp
     $sched_service_enable   = true
     $sched_service_ensure   = 'running'
-    $sched_service_name     = 'pbs_sched'
+    $sched_service_name     = 'torque-sched'
     $sched_service_options = {
         pbs_home => $torque_home,
         pbs_args => [
-            "-L ${torque_home}/${sched_service_name}.log",
+            "-L ${torque_home}/sched_logs/${sched_service_name}.log",
         ]
     }
 
     # auth.pp
     # List of users that will be always allowed to login to auth nodes
     $auth_allowed_users     = ['root','torque']
+
+    # config.pp
+
+    # list of vars to set for pbs_environment
+    $pbs_environment        = [
+        'PATH=/bin:/usr/bin',
+        'LANG=en_us.UTF-8'
+    ]
 }

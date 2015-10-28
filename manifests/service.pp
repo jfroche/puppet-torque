@@ -38,7 +38,7 @@ define torque::service(
                 before => File["/etc/init.d/${service_name}"]
             }
             exec {"add_daemon_pbs_args_${service_name}":
-                command => "/bin/sed -i -E 's/(daemon \\\$PBS_DAEMON)(.*)(-d \\\$PBS_HOME)/\1\2\3 \$PBS_ARGS/' ${service_file_source}",
+                command => "/bin/sed -i -E 's/(daemon \\\$PBS_DAEMON)(.*)(-d \\\$PBS_HOME)/\\1\\2\\3 \$PBS_ARGS/' ${service_file_source}",
                 unless => "/bin/grep -qE \'daemon.*\\\$PBS_ARGS\' ${service_file_source}",
                 before => File["/etc/init.d/${service_name}"]
             }

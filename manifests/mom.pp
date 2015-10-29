@@ -78,7 +78,9 @@ class torque::mom(
     }
 
     if $options['tmpdir'] {
-        exec {"/bin/mkdir -p ${options[tmpdir]}": refreshonly => true}
+        exec {"/bin/mkdir -p ${options[tmpdir]}":
+            unless => "/usr/bin/test -d ${options[tmpdir]}"
+        }
         file {$options['tmpdir']:
             ensure => directory,
             owner => root,

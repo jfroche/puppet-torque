@@ -5,6 +5,7 @@ define torque::service(
     $torque_home            = $torque::params::torque_home,
     $use_logrotate          = true,
     $service_file_source    = undef,
+    $manage_service         = false
 ) {
     validate_hash($service_options)
     validate_re($ensure, ['^running$','^stopped$','^absent$'])
@@ -20,29 +21,32 @@ define torque::service(
         default  => fail('Unsupported operating system')
     }
 
-    file {"/etc/init.d/${service_name}":
-        source => $service_file_source,
-        mode => "0755",
-        owner => root,
-        group => root
-    }
+    if $manage_service {
+      file {"/etc/init.d/${service_name}":
+          source => $service_file_source,
+          mode   => "0755",
+          owner  => root,
+          group  => root,
+          notify => Service[$service_name],
+      }
 
-    case $::osfamily {
-        'RedHat': {
-            # See https://github.com/adaptivecomputing/torque/pull/330
-            file_line {"ensure_pbs_args_in_${service_name}":
-                path => $service_file_source,
-                line => 'PBS_ARGS=""',
-                match => '^PBS_ARGS=',
-                after => "PBS_HOME=${torque_home}",
-                before => File["/etc/init.d/${service_name}"]
-            }
-            exec {"add_daemon_pbs_args_${service_name}":
-                command => "/bin/sed -i -E 's/(daemon \\\$PBS_DAEMON)(.*)(-d \\\$PBS_HOME)/\\1\\2\\3 \$PBS_ARGS/' ${service_file_source}",
-                unless => "/bin/grep -qE \'daemon.*\\\$PBS_ARGS\' ${service_file_source}",
-                before => File["/etc/init.d/${service_name}"]
-            }
-        }
+      case $::osfamily {
+          'RedHat': {
+              # See https://github.com/adaptivecomputing/torque/pull/330
+              file_line {"ensure_pbs_args_in_${service_name}":
+                  path => $service_file_source,
+                  line => 'PBS_ARGS=""',
+                  match => '^PBS_ARGS=',
+                  after => "PBS_HOME=${torque_home}",
+                  before => File["/etc/init.d/${service_name}"]
+              }
+              exec {"add_daemon_pbs_args_${service_name}":
+                  command => "/bin/sed -i -E 's/(daemon \\\$PBS_DAEMON)(.*)(-d \\\$PBS_HOME)/\\1\\2\\3 \$PBS_ARGS/' ${service_file_source}",
+                  unless => "/bin/grep -qE \'daemon.*\\\$PBS_ARGS\' ${service_file_source}",
+                  before => File["/etc/init.d/${service_name}"]
+              }
+          }
+      }
     }
 
     file { $service_default_file:
@@ -60,7 +64,6 @@ define torque::service(
         require    => [
         ],
         subscribe  => [
-            File["/etc/init.d/${service_name}"],
             File["${torque_home}/server_name"],
             File["${torque_home}/pbs_environment"]
         ],

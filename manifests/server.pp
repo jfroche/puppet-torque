@@ -13,7 +13,8 @@ class torque::server(
     $build_dir                        = $torque::params::build_dir,
     $configure_options                = $torque::params::configure_options,
     $prefix                           = $torque::params::prefix,
-    $build                            = $torque::params::build
+    $build                            = $torque::params::build,
+    $manage_service_file              = $torque::params::server_manage_service_file
 ) inherits torque::params {
 
     validate_bool($enable_maui)
@@ -39,7 +40,7 @@ class torque::server(
         package { $server_package:
             ensure => $server_ensure
         }
-        $actual_service_name = 'torque-server'
+        $actual_service_name = 'pbs_server'
         $service_file_source = undef
     }
 
@@ -47,7 +48,8 @@ class torque::server(
         ensure => $service_ensure,
         enable => $service_enable,
         service_options => $server_service_options,
-        service_file_source => $service_file_source
+        service_file_source => $service_file_source,
+        manage_service => $manage_service_file
     }
 
     file {"${torque_home}/spool":

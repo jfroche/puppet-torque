@@ -1,6 +1,6 @@
 module Puppet::Parser::Functions
   newfunction(:torque_config_diff, :type => :rvalue) do |args|
-    req_presence = lookupvar('torque_qmgr_present')
+    req_presence = lookupvar('torque::params::qmgr_present')
     req_presence = [] if req_presence.nil?
     case args[0]
     when 'server'

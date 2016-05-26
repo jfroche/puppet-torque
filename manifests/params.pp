@@ -69,7 +69,6 @@ class torque::params {
 
     # the following options are protected from being unset
     # if they don't appear in torque_qmgr_server
-    # I can't find where this is actually referenced
     $qmgr_present               = [
         'acl_hosts',
         'node_check_rate',

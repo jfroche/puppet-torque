@@ -29,6 +29,7 @@ class torque::params {
     $server_service_name        = 'torque-server'
     $server_service_ensure      = 'running'
     $server_service_enable      = true
+    $server_manage_service_file = true
     $server_package             = 'torque-server'
     $log_file                   = 'server.log'
     $use_logrotate              = true

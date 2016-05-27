@@ -36,20 +36,23 @@ class torque::server(
         }
         $service_file_source = "${build_dir}/torque-${version}/contrib/init.d/${service_file}"
         $actual_service_name = 'pbs_server'
+        $requirement = Exec["make_install_${version}"]
     } else {
         package { $server_package:
             ensure => $server_ensure
         }
+        $requirement = Package[$server_package]
         $actual_service_name = 'pbs_server'
         $service_file_source = undef
     }
 
     torque::service { $actual_service_name:
-        ensure => $service_ensure,
-        enable => $service_enable,
-        service_options => $server_service_options,
+        ensure              => $service_ensure,
+        enable              => $service_enable,
+        service_options     => $server_service_options,
         service_file_source => $service_file_source,
-        manage_service => $manage_service_file
+        manage_service      => $manage_service_file,
+        require             => $requirement,
     }
 
     file {"${torque_home}/spool":

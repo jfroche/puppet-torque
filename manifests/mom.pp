@@ -92,9 +92,10 @@ class torque::mom(
     }
 
     torque::service { $actual_service_name:
-        ensure => $mom_service_ensure,
-        enable => $mom_service_enable,
-        service_options => $mom_service_options,
-        service_file_source => $service_file_source
+        ensure              => $mom_service_ensure,
+        enable              => $mom_service_enable,
+        service_options     => $mom_service_options,
+        service_file_source => $service_file_source,
+        require             => $requirement,
     }
 }

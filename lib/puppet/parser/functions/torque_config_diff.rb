@@ -36,7 +36,7 @@ module Puppet::Parser::Functions
 					when nil
 						sconfig << "unset server #{key}" unless req_presence.include?(key)
 					else
-						sconfig << "set server #{key} = #{clientconfig[key]}"
+						sconfig << "set server #{key} = #{config[key]}"
 					end
 				end
 			end

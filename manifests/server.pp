@@ -52,6 +52,7 @@ class torque::server(
         service_options     => $server_service_options,
         service_file_source => $service_file_source,
         manage_service      => $manage_service_file,
+        before              => Exec['qmgr update'],
         require             => $requirement,
     }
 

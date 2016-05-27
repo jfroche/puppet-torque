@@ -7,6 +7,7 @@ class torque::mom(
     $max_load_adj                   = $torque::params::max_load_adj,
     $options                        = $torque::params::options,
     $usecp                          = $torque::params::usecp,
+    $mom_package                    = $torque::params::mom_package,
     $mom_ensure                     = $torque::params::mom_ensure,
     $mom_service_enable             = $torque::params::mom_service_enable,
     $mom_service_ensure             = $torque::params::mom_service_ensure,
@@ -35,7 +36,7 @@ class torque::mom(
         $actual_service_name = 'pbs_mom'
         $requirement = Exec["install_torque_docs_${version}"]
     } else {
-        package { 'torque-mom':
+        package { $mom_package:
             ensure => $mom_ensure,
         }
         $requirement = Package['torque-mom']

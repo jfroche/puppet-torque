@@ -99,6 +99,7 @@ class torque::params {
     $max_load_adj               = 1.2
     $options                    = { logevent => 255 }
     $usecp                      = []
+    $mom_package                = 'torque-mom'
     $mom_service_name           = 'torque-mom'
     $mom_ensure                 = 'installed'
     $mom_service_enable         = true

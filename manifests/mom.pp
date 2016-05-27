@@ -39,7 +39,7 @@ class torque::mom(
         package { $mom_package:
             ensure => $mom_ensure,
         }
-        $requirement = Package['torque-mom']
+        $requirement = Package[$mom_package]
         $actual_service_name = $mom_service_name
     }
 

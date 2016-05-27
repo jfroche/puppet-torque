@@ -46,14 +46,20 @@ class torque::params {
     # server/config.pp
     # Options from pbs_server_attributes man page
     $qmgr_server                = {
-        'acl_hosts'           => "${::fqdn}",
+        'acl_hosts'           => [
+          "${::fqdn}"
+        ],
         'node_check_rate'     => '150',
         'tcp_timeout'         => '6',
         'next_job_number'     => '0',
         'scheduling'          => 'True',
         'acl_host_enable'     => 'False',
-        'managers'            => "root@${::fqdn}",
-        'operators'           => "root@${::fqdn}",
+        'managers'            => [
+          "root@${::fqdn}"
+        ],
+        'operators'           => [
+          "root@${::fqdn}"
+        ],
         'log_events'          => '511',
         'mail_from'           => 'adm',
         'mail_domain'         => 'never',
@@ -66,6 +72,14 @@ class torque::params {
         # in all versions
         #    "authorized_users = *@${::fqdn}"
     }
+
+    $qmgr_arrays = [
+      'acl_hosts',
+      'acl_roots',
+      'managers',
+      'submit_hosts',
+      'operators'
+    ]
 
     # the following options are protected from being unset
     # if they don't appear in torque_qmgr_server

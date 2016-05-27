@@ -1,10 +1,10 @@
 module Puppet::Parser::Functions
 	newfunction(:torque_config_diff, :type => :rvalue) do |args|
-		req_presence = lookupvar('torque::params::qmgr_present')
-		req_presence = [] if req_presence.nil?
+		req_presence = lookupvar('torque::params::qmgr_present') || []
+		array_items = lookupvar('torque::params::qmgr_arrays') || []
+
 		case args[0]
 		when 'server'
-			array_items = %w[acl_hosts acl_roots managers submit_hosts]
 			config = args[1]
 			raise(Puppet::ParseError, "torque_config_diff(server), second argument has to be an hash") unless config.is_a?(Hash)
 			clientconfig = JSON.load(lookupvar('torque_server_config')) || {}

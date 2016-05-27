@@ -7,7 +7,7 @@ Facter.add(:torque_server_config) do
 		if tsc.nil?
 			nil
 		else
-			array_items = %w[acl_hosts acl_roots managers submit_hosts]
+			array_items = %w[acl_hosts acl_roots managers submit_hosts operators]
 			result = {}
 			tsc.gsub(/\+=/, '=').split("\n").select{|line| line.match(/^set server /)}.sort.each do |line|
 				_set, _server, key, _is, value = line.split(" ")

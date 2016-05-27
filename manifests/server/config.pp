@@ -7,7 +7,7 @@ class torque::server::config (
   $torque_home              = $torque::params::torque_home,
 ) {
 
-  validate_array($qmgr_server)
+  validate_hash($qmgr_server)
   validate_array($qmgr_queue_defaults)
   validate_hash($qmgr_queues)
 

@@ -45,23 +45,23 @@ class torque::params {
 
     # server/config.pp
     # Options from pbs_server_attributes man page
-    $qmgr_server                = [
-        "acl_hosts = ${::fqdn}",
-        'node_check_rate = 150',
-        'tcp_timeout = 6',
-        'next_job_number = 0',
-        'scheduling = True',
-        'acl_host_enable = False',
-        "managers = root@${::fqdn}",
-        "operators = root@${::fqdn}",
-        'log_events = 511',
-        'mail_from = adm',
-        'mail_domain = never',
-        'query_other_jobs = True',
-        'scheduler_iteration = 600',
-        'default_node = lcgpro',
-        'node_pack = False',
-        'kill_delay = 10',
+    $qmgr_server                = {
+        'acl_hosts' => "${::fqdn}",
+        'node_check_rate' => '150',
+        'tcp_timeout' => '6',
+        'next_job_number' => '0',
+        'scheduling' => 'True',
+        'acl_host_enable' => 'False',
+        'managers' => "root@${::fqdn}",
+        'operators' => "root@${::fqdn}",
+        'log_events' => '511',
+        'mail_from' => 'adm',
+        'mail_domain' => 'never',
+        'query_other_jobs' => 'True',
+        'scheduler_iteration' => '600',
+        'default_node' => 'lcgpro',
+        'node_pack' => 'False',
+        'kill_delay' => '10',
         # attribute doesn't seem to be supported
         # in all versions
         #    "authorized_users = *@${::fqdn}"

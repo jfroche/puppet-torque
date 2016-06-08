@@ -159,6 +159,6 @@ class torque::params {
     # list of vars to set for pbs_environment
     $pbs_environment        = [
         'PATH=/bin:/usr/bin',
-        'LANG=en_us.UTF-8'
+        'LANG=en_US.UTF-8'
     ]
 }

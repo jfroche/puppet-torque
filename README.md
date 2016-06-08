@@ -86,7 +86,7 @@ client (a computing node):
 ```puppet
 node default {
     include profiles::torque::client
-} 
+}
 ```
 
 ## Maui
@@ -115,7 +115,7 @@ torque::mom::options:
     tmpdir: '/scratch/jobs'
 torque::mom::pbs_environment:
     - 'PATH=/bin:/usr/bin'
-    - 'LANG=en_us.UTF-8'
+    - 'LANG=en_US.UTF-8'
     - 'BASH_ENV=/etc/bashrc'
     - 'ENV=/etc/bashrc'
 torque::mom::mom_epilogue_file: 'puppet:///modules/torque/epilogue'

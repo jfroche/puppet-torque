@@ -124,6 +124,7 @@ class torque::params {
             "-L ${torque_home}/mom_logs/${mom_service_name}.log",
         ]
     }
+    $mom_manage_tmpdir          = true
 
     # job_environment.pp
     # This is a hash of simple VAR=VAL that will be put in

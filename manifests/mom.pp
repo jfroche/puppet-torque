@@ -17,6 +17,7 @@ class torque::mom(
     $version                        = $torque::params::version,
     $build_dir                      = $torque::params::build_dir,
     $mom_service_options            = $torque::params::mom_service_options
+    $mom_manage_tmpdir              = $torque::params::mom_manage_tmpdir
 ) inherits torque::params {
 
   # job execution engine for Torque batch system
@@ -78,17 +79,19 @@ class torque::mom(
         require => $requirement
     }
 
-    if $options['tmpdir'] {
+    if $mom_manage_tmpdir {
+      if $options['tmpdir'] {
         exec {"/bin/mkdir -p ${options[tmpdir]}":
-            unless => "/usr/bin/test -d ${options[tmpdir]}"
+          unless => "/usr/bin/test -d ${options[tmpdir]}"
         }
         file {$options['tmpdir']:
-            ensure => directory,
-            owner => root,
-            group => root,
-            mode => '1733',
-            require => Exec["/bin/mkdir -p ${options[tmpdir]}"]
+          ensure => directory,
+          owner => root,
+          group => root,
+          mode => '1733',
+          require => Exec["/bin/mkdir -p ${options[tmpdir]}"]
         }
+      }
     }
 
     torque::service { $actual_service_name:

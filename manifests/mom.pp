@@ -16,8 +16,8 @@ class torque::mom(
     $build                          = $torque::params::build,
     $version                        = $torque::params::version,
     $build_dir                      = $torque::params::build_dir,
-    $mom_service_options            = $torque::params::mom_service_options
-    $mom_manage_tmpdir              = $torque::params::mom_manage_tmpdir
+    $mom_service_options            = $torque::params::mom_service_options,
+    $mom_manage_tmpdir              = $torque::params::mom_manage_tmpdir,
 ) inherits torque::params {
 
   # job execution engine for Torque batch system

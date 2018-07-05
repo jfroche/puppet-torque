@@ -1,7 +1,7 @@
 # torque_server_config
 Facter.add(:torque_server_config) do
 	confine :osfamily => 'RedHat'
-	confine :batchsystem => 'torque'
+	confine :batchsystem => /^torque/
 	setcode do
 		tsc = %x[qmgr -c 'print server']
 		if tsc.nil?
